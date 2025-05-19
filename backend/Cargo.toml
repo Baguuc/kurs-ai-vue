@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 thiserror = "2"
 tokio = { version = "1", features = ["full"] }
+clorinde = { path = "./clorinde" }
 
 [dev-dependencies]
 anyhow = "1"
