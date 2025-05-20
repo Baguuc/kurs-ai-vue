@@ -7,5 +7,9 @@ pub enum Error {
     #[error(transparent)]
     Query(#[from] clorinde::tokio_postgres::Error),
     #[error(transparent)]
-    CreatePool(#[from] clorinde::deadpool_postgres::CreatePoolError)
+    CreatePool(#[from] clorinde::deadpool_postgres::CreatePoolError),
+    #[error(transparent)] 
+    Rocket(#[from] rocket::Error),
+    #[error(transparent)] 
+    Serde(#[from] serde_json::Error)
 }
