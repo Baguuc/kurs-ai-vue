@@ -27,3 +27,40 @@ pub async fn list_courses(pool: &rocket::State<clorinde::deadpool_postgres::Pool
     
     ListCoursesResponse::Ok(ListCoursesOkResponse(courses.into()))
 }
+
+
+
+#[derive(rocket::Responder)]
+pub struct FetchCourseOkResponse(rocket::serde::json::Json<clorinde::queries::courses::FetchCourse>);
+
+#[derive(rocket::Responder)]
+#[response(status = 502)]
+pub struct FetchCourseServerErrResponse(String);
+
+#[derive(rocket::Responder)]
+#[response(status = 404)]
+pub struct FetchCourseClientErrResponse(String);
+
+#[derive(rocket::Responder)]
+pub enum FetchCourseResponse {
+    Ok(FetchCourseOkResponse),
+    ServerErr(FetchCourseServerErrResponse),
+    ClientErr(FetchCourseClientErrResponse)
+}
+
+#[rocket::get("/<id>")]
+pub async fn fetch_course(id: i32, pool: &rocket::State<clorinde::deadpool_postgres::Pool>) -> FetchCourseResponse {
+    use clorinde::queries::courses::fetch_course;
+    
+    let client = match pool.get().await {
+        Err(err) => return FetchCourseResponse::ServerErr(FetchCourseServerErrResponse(err.to_string())).into(),
+        Ok(client) => client
+    };
+
+    let course = match fetch_course().bind(&client, &id).one().await {
+        Err(err) => return FetchCourseResponse::ClientErr(FetchCourseClientErrResponse(String::from("Not found"))).into(),
+        Ok(course) => course
+    };
+    
+    FetchCourseResponse::Ok(FetchCourseOkResponse(course.into()))
+}

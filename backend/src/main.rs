@@ -16,7 +16,7 @@ async fn rocket() -> _ {
     rocket::build()
         .manage(pool)
         .mount("/", rocket::routes![routes::health::health])
-        .mount("/courses", rocket::routes![routes::courses::list_courses])
+        .mount("/courses", rocket::routes![routes::courses::list_courses, routes::courses::fetch_course])
 }
 
 async fn create_pool() -> Result<Pool> {
