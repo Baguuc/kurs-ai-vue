@@ -1,6 +1,6 @@
 // This file was generated with `clorinde`. Do not modify.
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize)]
 pub struct ListCourses {
     pub id: i32,
     pub name: String,
@@ -20,7 +20,7 @@ impl<'a> From<ListCoursesBorrowed<'a>> for ListCourses {
         }
     }
 }
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize)]
 pub struct FetchCourse {
     pub id: i32,
     pub name: String,

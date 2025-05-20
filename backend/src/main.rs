@@ -16,11 +16,12 @@ async fn rocket() -> _ {
     rocket::build()
         .manage(pool)
         .mount("/", rocket::routes![routes::health::health])
+        .mount("/courses", rocket::routes![routes::courses::list_courses])
 }
 
 async fn create_pool() -> Result<Pool> {
     let mut cfg = Config::new();
-    cfg.user = Some(String::from("baguc"));
+    cfg.user = Some(String::from("bagu"));
     cfg.password = Some(String::from("123"));
     cfg.host = Some(String::from("127.0.0.1"));
     cfg.port = Some(5432);

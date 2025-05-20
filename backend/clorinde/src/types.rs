@@ -14,7 +14,7 @@ pub mod time {
     pub type Date = time::Date;
     pub type Time = time::Time;
 }
-#[derive(Debug, postgres_types::FromSql, Clone, PartialEq)]
+#[derive(Debug, postgres_types::FromSql, Clone, PartialEq, serde::Serialize)]
 #[postgres(name = "episode")]
 pub struct Episode {
     #[postgres(name = "id")]
@@ -149,7 +149,7 @@ impl<'a> postgres_types::ToSql for EpisodeBorrowed<'a> {
         postgres_types::__to_sql_checked(self, ty, out)
     }
 }
-#[derive(Debug, postgres_types::FromSql, Clone, PartialEq)]
+#[derive(Debug, postgres_types::FromSql, Clone, PartialEq, serde::Serialize)]
 #[postgres(name = "module")]
 pub struct Module {
     #[postgres(name = "id")]
