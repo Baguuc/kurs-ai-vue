@@ -6,6 +6,28 @@ pub mod routes;
 use clorinde::deadpool_postgres::{Config, CreatePoolError, Pool, Runtime};
 use clorinde::tokio_postgres::NoTls;
 use prelude::*;
+use rocket::http::Header;
+use rocket::{Request, Response};
+use rocket::fairing::{Fairing, Info, Kind};
+
+pub struct CORS;
+
+#[rocket::async_trait]
+impl Fairing for CORS {
+    fn info(&self) -> Info {
+        Info {
+            name: "Add CORS headers to responses",
+            kind: Kind::Response,
+        }
+    }
+
+    async fn on_response<'r>(&self, _request: &'r Request<'_>, response: &mut Response<'r>) {
+        response.set_header(Header::new("Access-Control-Allow-Origin", "http://localhost:5173"));
+        response.set_header(Header::new("Access-Control-Allow-Methods", "POST, GET"));
+        response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
+        response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
+    }
+}
 
 #[rocket::launch]
 async fn rocket() -> _ {
@@ -14,6 +36,7 @@ async fn rocket() -> _ {
         .expect("Cannot create the database pool!");
     
     rocket::build()
+        .attach(CORS)
         .manage(pool)
         .mount("/", rocket::routes![routes::health::health])
         .mount("/courses", rocket::routes![routes::courses::list_courses, routes::courses::fetch_course])
