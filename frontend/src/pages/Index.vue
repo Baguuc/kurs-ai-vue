@@ -1,3 +1,3 @@
 <template>
-  <RouterLink to="/courses/">Zobacz dostepne kursy</RouterLink>
+  <Link to="/courses">Zobacz dostępne kursy</Link>
 </template>
