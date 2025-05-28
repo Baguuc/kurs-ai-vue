@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <div class="w-screen h-screen bg-neutral-400">
+  <div class="max-w-screen min-h-screen bg-neutral-400">
     <RouterView />
   </div>
 </template>
