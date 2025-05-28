@@ -1,5 +1,6 @@
 <script lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
+import { computedAsync } from '@vueuse/core';
 import { fetchCourse } from '../models/course.ts';
 import type { Course } from '../models/course.ts';
 import { useRoute } from 'vue-router';
@@ -7,35 +8,30 @@ import { useRoute } from 'vue-router';
 export default {
   setup() {
     const route = useRoute();
-    const id = computed(() => route ? route.params.id : -1);
-
-    const course = ref(null);
     const moduleIdx = ref(0);
-    const module = computed(() => {
-      if(course.value) {
-        return course.value.modules[moduleIdx.value];
-      } else {
-        return { title: '', no: -1, episodes: [] }
-      }
+    
+    const courseId = computedAsync(async () => {
+      if(route) return route.params.courseId;
     });
 
-    async function refreshData() {
-      try {
-        const newValue = await fetchCourse(id.value);
-        newValue.modules.sort((a, b) => a.no > b.no);
-        course.value = newValue;
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
+    const course = computedAsync(async () => {
+      if(!courseId.value) return;
+      
+      return await fetchCourse(courseId.value);
+    });
 
-    onMounted(refreshData);
+    const module = computedAsync(async () => {
+      if(!course.value) return;
+            
+      return course.value.modules[moduleIdx.value];
+    });
 
-    function setModule(idx) {
-      moduleIdx.value = idx;
+
+    function setModule(v) {
+      moduleIdx.value = v;
     }
     
-    return { course, module, setModule, route, id, moduleIdx }
+    return { course, module, setModule, route, courseId, moduleIdx }
   }
 }
 </script>
@@ -48,7 +44,7 @@ export default {
     </Sidebar>
     <SidebarPage>
     <div class="h-full flex flex-col">
-      <Link v-for="(episode, index) in module.episodes" :to="`/courses/${id}/${moduleIdx}`">{{ episode.no }}. {{ episode.title }}</Link>
+      <Link v-for="(episode, index) in module?.episodes" :to="`/courses/${courseId}/${moduleIdx}`">{{ episode.no }}. {{ episode.title }}</Link>
     </div>
     </SidebarPage>
   </SidebarRoot>
