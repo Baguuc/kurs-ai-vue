@@ -3,13 +3,11 @@ export default {
     "./index.html",
     "./src/**/*.{html,js,jsx,ts,tsx,vue}",
   ],
-  safelist: [
-    {
-      pattern: /\*/,
-    },
-  ],
+  safelist: [],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require("@catppuccin/tailwindcss")(),
+  ],
 }

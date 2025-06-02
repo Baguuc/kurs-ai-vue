@@ -49,15 +49,19 @@ export default {
 </script>
 <template>
   <SidebarRoot>
-    <Sidebar title="Moduły">
+    <Sidebar title="Lekcje">
+      <Link :to="`/courses/${course.id}`">Wróć</Link>
       <button v-for="(episode, index) in module.episodes" class="w-fit h-fit p-1 bg-transparent text-white hover:text-neutral-400 duration-100 text-sm" @click="setEpisode(index)">
         {{ episode.no }}. {{ episode.title }}
       </button>
     </Sidebar>
-    <SidebarPage>
-      <div>
-        <div class="h-full flex flex-col gap-2 items-center" v-html="content" />
+    <div class="w-screen h-screen flex flex-col items-center justify-center">
+      <div class="bg-ctp-base w-fit max-w-[800px] h-[800px] flex flex-col items-center p-8 gap-4 rounded-sm text-ctp-text">
+        <h1 class="text-ctp-text text-center text-xl">{{ episode?.title }}</h1>
+        <hr class="border-ctp-text w-full" />
+        <div class="h-full flex flex-col items-center overflow-y-scroll" v-html="content">
+        </div>
       </div>
-    </SidebarPage>
+    </div>
   </SidebarRoot>
 </template>
